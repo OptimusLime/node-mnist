@@ -40,5 +40,7 @@ parser.on('parseError', function(e)
 	console.log("Parse error: ", e);
 });
 
+//ignore everything but 2 and 5
+var ignore = parser.desiredIgnoreMap([2,5]);
 
-parser.parseMNIST(absLabelPath, absDataPath, 20);
+parser.parseMNIST(absLabelPath, absDataPath, ignore, 20);
