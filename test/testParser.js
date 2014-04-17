@@ -9,7 +9,7 @@ var absLabelPath = path.resolve(__dirname, "../data/t10k-labels-idx1-ubyte.gz");
 
 //send for processing in parser
 var parser = new mnistParser();
-
+var chunkCount = 20;
 function pullInt32(data, start)
 {
 	start = start || 0;
@@ -35,6 +35,15 @@ parser.on('parseDigitChunk', function(chunkIx, chunkData, totalChunkCount)
 	console.log("chunk-" + (chunkIx + 1) + " out of " + totalChunkCount + " images in total");
 });
 
+parser.on('parseFullData', function(imgMap){
+	//if(chunkCount > 1)
+	//	return;
+		
+	//otherwise, we simply save to chunk directory -- as the full.json object
+	var save = JSON.stringify(imgMap);
+	fs.writeFileSync(path.resolve(__dirname, '../build/chunks/full.json'), save);
+});
+
 parser.on('parseError', function(e)
 {
 	console.log("Parse error: ", e);
@@ -43,4 +52,4 @@ parser.on('parseError', function(e)
 //ignore everything but 2 and 5
 var ignore = parser.desiredIgnoreMap([2,5]);
 
-parser.parseMNIST(absLabelPath, absDataPath, ignore, 20);
+parser.parseMNIST(absLabelPath, absDataPath, ignore, chunkCount);
